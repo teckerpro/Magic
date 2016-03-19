@@ -1,0 +1,1 @@
+g++ -o magic main.cpp
