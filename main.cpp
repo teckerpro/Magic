@@ -72,13 +72,13 @@ int main()
 							i++;
 							uint32_t pixel0 = make_pixel(r0, g0, b0);
 							uint32_t pixel1 = make_pixel(r1, g1, b1);
-							//uint32_t magic_result = magic_add_pixels(pixel0, pixel1);
+							uint32_t magic_result = magic_add_pixels(pixel0, pixel1);
 							uint32_t normal_result = add_pixels(pixel0, pixel1);
-							//if (normal_result != magic_result)
+							if (normal_result != magic_result)
 							if(0)
 							{						
-							//	printf("wrong result with [%08X]+[%08X]\n", pixel0, pixel1);
-							//	printf("got [%08X] need [%08X]\n", magic_result, normal_result);						
+								printf("wrong result with [%08X]+[%08X]\n", pixel0, pixel1);
+								printf("got [%08X] need [%08X]\n", magic_result, normal_result);						
 							}
 						}
 					}
