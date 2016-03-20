@@ -24,10 +24,10 @@ static uint32_t magic_add_pixels(uint32_t left, uint32_t right)
 {
 	uint32_t res = 0;
 	
-	res += (((bool)(0x0000100 & (left & 0x0000FF) + (right & 0x0000FF))) * 0x0000FF) | ((left & 0x0000FF) + (right & 0x0000FF) & 0x0000FF);
-	res += (((bool)(0x0010000 & (left & 0x00FF00) + (right & 0x00FF00))) * 0x00FF00) | ((left & 0x00FF00) + (right & 0x00FF00) & 0x00FF00);
-	res += (((bool)(0x1000000 & (left & 0xFF0000) + (right & 0xFF0000))) * 0xFF0000) | ((left & 0xFF0000) + (right & 0xFF0000) & 0xFF0000);
-	res += ((((bool)(0x0000100 & (left>>24 & 0x0000FF) + (right>>24 & 0x0000FF))) * 0x0000FF) | ((left>>24 & 0x0000FF) + (right>>24 & 0x0000FF) & 0x0000FF))<<24;
+	res += (((bool)(0x100 & (left & 0xFF) + (right & 0xFF))) * 0xFF) | ((left & 0xFF) + (right & 0xFF) & 0xFF);
+	res += ((((bool)(0x100 & (left >> 8 & 0xFF) + (right >> 8 & 0xFF))) * 0xFF) | ((left >> 8 & 0xFF) + (right >> 8 & 0xFF) & 0xFF)) << 8;
+	res += ((((bool)(0x100 & (left >> 16 & 0xFF) + (right >> 16 & 0xFF))) * 0xFF) | ((left >> 16 & 0xFF) + (right >> 16 & 0xFF) & 0xFF)) << 16;
+	res += ((((bool)(0x100 & (left >> 24 & 0xFF) + (right >> 24 & 0xFF))) * 0xFF) | ((left >> 24 & 0xFF) + (right >> 24 & 0xFF) & 0xFF)) << 24;
 
 	return res;
 }
