@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <iostream>
+#include <iomanip>
 using namespace std;
 
 static uint32_t make_pixel(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0)
@@ -20,16 +21,24 @@ static uint32_t saturated_sum(uint32_t left, uint32_t right)
 }
 
 // Магическое сложение с насыщением
-static uint32_t magic_add_pixels(uint32_t left, uint32_t right)
+static uint64_t magic_add_pixels(uint32_t left, uint32_t righ)
 {
-	uint32_t res = 0;
+	uint64_t resl, resr, res, ind;
 	
+	resl = (((uint64_t)left & 0xFF000000) << 12) + (((uint64_t)left & 0xFF0000) << 8) + ((left & 0xFF00) << 4) + (left & 0xFF);
+	resr = (((uint64_t)righ & 0xFF000000) << 12) + (((uint64_t)righ & 0xFF0000) << 8) + ((righ & 0xFF00) << 4) + (righ & 0xFF);
+	res = resl + resr;
+	ind = res & 0x100000000000;
+
+	//res = ((bool)(0x100000000000 & res) * 0xFF000000000) + ((bool)(0x100000000 & res) * 0xFF000000) + ((bool)(0x100000 & res) * 0xFF000) + ((bool)0x100 & res) * 0xFF;
+//	res = ((bool)(0x100000000000 & res) * 0xFF000000000) + ((bool)(0x100000000 & res) * 0xFF000000) + ((bool)(0x100000 & res) * 0xFF000) + ((bool)0x100 & res) * 0xFF;
+	/*
 	res += (((bool)(0x100 & (left & 0xFF) + (right & 0xFF))) * 0xFF) | ((left & 0xFF) + (right & 0xFF) & 0xFF);
 	res += ((((bool)(0x100 & (left >> 8 & 0xFF) + (right >> 8 & 0xFF))) * 0xFF) | ((left >> 8 & 0xFF) + (right >> 8 & 0xFF) & 0xFF)) << 8;
 	res += ((((bool)(0x100 & (left >> 16 & 0xFF) + (right >> 16 & 0xFF))) * 0xFF) | ((left >> 16 & 0xFF) + (right >> 16 & 0xFF) & 0xFF)) << 16;
 	res += ((((bool)(0x100 & (left >> 24 & 0xFF) + (right >> 24 & 0xFF))) * 0xFF) | ((left >> 24 & 0xFF) + (right >> 24 & 0xFF) & 0xFF)) << 24;
-
-	return res;
+	*/
+	return ind;
 }
 
 static uint32_t add_pixels(uint32_t left, uint32_t right)
@@ -49,7 +58,7 @@ static uint32_t add_pixels(uint32_t left, uint32_t right)
 
 int main()
 
-{
+{/*
 	int i = 0;
 	uint8_t test_bytes[26];
 	for (int i = 0, j = 0 ; i < 0xFF; j++, i+=10)
@@ -78,7 +87,19 @@ int main()
 			}
 		}
 	}
-	printf("Everything is OK! Number of iterations is = %d\n", i);
+	printf("Everything is OK! Number of iterations is = %d\n", i);*/
+
+	uint32_t a = 0x11BB220D;
+	
+	uint64_t b;
+	b = magic_add_pixels(a, a);
+
+	printf("%012llX\n", b);
+	uint32_t d = 0x0AA007;
+	uint32_t c;
+	c = d+d;
+
+	//printf("%06X\n", c);
 
 	system("pause");
 	return 0;
