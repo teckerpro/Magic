@@ -28,9 +28,7 @@ static uint32_t magic_add_pixels(uint32_t left, uint32_t righ)
 	resr = (((uint64_t)righ & 0xFF000000) << 12) | (((uint64_t)righ & 0xFF0000) << 8) | ((righ & 0xFF00) << 4) | (righ & 0xFF);
 
 	res = resl + resr;//сложение
-	res |= ((bool)(res & 0x100000000000) * 0xFF000000000) | ((bool)(res & 0x100000000) * 0xFF000000) | \
-		((bool)(res & 0x100000) * 0xFF000) | ((bool)(res & 0x100) * 0xFF); //проверка на насыщение
-
+	res |= ((res & 0x100100100100) >> 8) * 0xFF; //проверка на насыщение
 	res = (res & 0xFF) | ((res & 0xFF000) >> 4) | ((res & 0xFF000000) >> 8) | ((res & 0xFF000000000) >> 12);//задвигание обратно
 
 	return (uint32_t)res;
@@ -83,7 +81,10 @@ int main()
 		}
 	}
 	printf("Everything is OK! Number of iterations is = %d\n", i);
-
+/*
+	uint32_t a = 0xAA0bcc00;
+	printf("%08X", magic_add_pixels(a, a));
+*/
 
 	system("pause");
 	return 0;
