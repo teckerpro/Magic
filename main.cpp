@@ -23,15 +23,19 @@ static uint32_t saturated_sum(uint32_t left, uint32_t right)
 // Магическое сложение с насыщением
 static uint32_t magic_add_pixels(uint32_t left, uint32_t righ)
 {
-	uint64_t resl, resr, res;
-	resl = (((uint64_t)left & 0xFF000000) << 12) | (((uint64_t)left & 0xFF0000) << 8) | ((left & 0xFF00) << 4) | (left & 0xFF);
-	resr = (((uint64_t)righ & 0xFF000000) << 12) | (((uint64_t)righ & 0xFF0000) << 8) | ((righ & 0xFF00) << 4) | (righ & 0xFF);
+	uint32_t flag, res;
+	left = (left & 0xFF000000) | ((left & 0xFF0000) >> 4) | ((left & 0xFF00) >> 8);
+	righ = (righ & 0xFF000000) | ((righ & 0xFF0000) >> 4) | ((righ & 0xFF00) >> 8);
+	res = left + righ;
+	_asm
+	{
+		lahf
+		mov[flag], eax
+	}
+	res |= ((flag & 0x100) * 0xFF << 16) | (((res & 0x100000) * 0xFF) >> 8) | (((res & 0x100) * 0xFF) >> 8);
+	res = (res & 0xFF000000) | ((res & 0xFF000) << 4)  | ((res & 0xFF) << 8);
 
-	res = resl + resr;//сложение
-	res |= ((res & 0x100100100100) >> 8) * 0xFF; //проверка на насыщение
-	res = (res & 0xFF) | ((res & 0xFF000) >> 4) | ((res & 0xFF000000) >> 8) | ((res & 0xFF000000000) >> 12);//задвигание обратно
-
-	return (uint32_t)res;
+	return res;
 }
 
 static uint32_t add_pixels(uint32_t left, uint32_t right)
@@ -81,10 +85,6 @@ int main()
 		}
 	}
 	printf("Everything is OK! Number of iterations is = %d\n", i);
-/*
-	uint32_t a = 0xAA0bcc00;
-	printf("%08X", magic_add_pixels(a, a));
-*/
 
 	system("pause");
 	return 0;
