@@ -6,10 +6,10 @@ using namespace std;
 
 static uint32_t make_pixel(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0)
 {
-	return ((uint32_t)r << 16) |
-		   ((uint32_t)g <<  8) |
-		   ((uint32_t)b <<  0) |
-	     	(uint32_t)a << 24;
+	return ((uint32_t)r << 24) |
+		   ((uint32_t)g << 16) |
+		   ((uint32_t)b << 8) |
+	     	(uint32_t)a;
 }
 
 static uint32_t saturated_sum(uint32_t left, uint32_t right)
@@ -23,25 +23,30 @@ static uint32_t saturated_sum(uint32_t left, uint32_t right)
 // Магическое сложение с насыщением
 static uint32_t magic_add_pixels(uint32_t left, uint32_t righ)
 {
-	uint32_t res, xres;
+	uint32_t res, xres, flag;
 	res = left + righ;
+	_asm
+	{
+		lahf
+		mov [flag], eax
+	}
 	xres = (((left & righ) | ((left | righ) & ~res)) & 0x808080);
 	res ^= xres << 1;
-	res |= (xres * 0xFF) >> 7;
+	res |= ((flag & 0x100) * 0xFF0000) | ((xres * 0xFF) >> 7);
 	return res;
 }
 
 static uint32_t add_pixels(uint32_t left, uint32_t right)
 {
-	uint32_t r0 = (left >> 16) & 0xFF;
-	uint32_t g0 = (left >>  8) & 0xFF;
-	uint32_t b0 = (left >>  0) & 0xFF;
-	uint32_t a0 = (left >> 24) & 0xFF;
+	uint32_t r0 = (left >> 24) & 0xFF;
+	uint32_t g0 = (left >> 16) & 0xFF;
+	uint32_t b0 = (left >> 8) & 0xFF;
+	uint32_t a0 = (left >> 0) & 0xFF;
 
-	uint32_t r1 = (right >> 16) & 0xFF;
-	uint32_t g1 = (right >>  8) & 0xFF;
-	uint32_t b1 = (right >>  0) & 0xFF;
-	uint32_t a1 = (right >> 24) & 0xFF;
+	uint32_t r1 = (right >> 24) & 0xFF;
+	uint32_t g1 = (right >> 16) & 0xFF;
+	uint32_t b1 = (right >> 8) & 0xFF;
+	uint32_t a1 = (right >> 0) & 0xFF;
 
 	return make_pixel(saturated_sum(r0, r1), saturated_sum(g0, g1), saturated_sum(b0, b1), saturated_sum(a0, a1));
 }
