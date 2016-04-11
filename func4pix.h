@@ -4,6 +4,6 @@
 
  uint32_t make_pixel(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0);
  uint32_t saturated_sum(uint32_t left, uint32_t right);
-// Магическое сложение с насыщением
+// РњР°РіРёС‡РµСЃРєРѕРµ СЃР»РѕР¶РµРЅРёРµ СЃ РЅР°СЃС‹С‰РµРЅРёРµРј
  uint32_t magic_add_pixels(uint32_t left, uint32_t righ);
  uint32_t add_pixels(uint32_t left, uint32_t right);

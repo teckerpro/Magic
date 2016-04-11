@@ -16,14 +16,14 @@
 	return sum;
 }
 
-// Ìàãè÷åñêîå ñëîæåíèå ñ íàñûùåíèåì
+// ĞœĞ°Ğ³Ğ¸Ñ‡ĞµÑĞºĞ¾Ğµ ÑĞ»Ğ¾Ğ¶ĞµĞ½Ğ¸Ğµ Ñ Ğ½Ğ°ÑÑ‹Ñ‰ĞµĞ½Ğ¸ĞµĞ¼
  uint32_t magic_add_pixels(uint32_t left, uint32_t righ)
 {
 	uint32_t res, xres;
 	res = left + righ;
-	//ïğîâåğêà íà ïåğåïîëíåíèå
+	//Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ° Ğ½Ğ° Ğ¿ĞµÑ€ĞµĞ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ğµ
 	xres = (res ^ left ^ righ) & 0x1010100;
-	//âû÷èòàíèå
+	//Ğ²Ñ‹Ñ‡Ğ¸Ñ‚Ğ°Ğ½Ğ¸Ğµ
 	res = res - xres & 0xff | res - xres & 0xff00 | res - (xres & 0xff0000) & 0xff0000;
 	res |= ((xres * 0xFF) >> 8);
 	return res;
