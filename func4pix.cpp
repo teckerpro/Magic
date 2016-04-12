@@ -19,13 +19,14 @@
 // Магическое сложение с насыщением
  uint32_t magic_add_pixels(uint32_t left, uint32_t righ)
 {
-	uint32_t res, xres;
+	uint32_t res, xres, ffres;
 	res = left + righ;
 	//проверка на переполнение
 	xres = (res ^ left ^ righ) & 0x1010100;
 	//вычитание
-	res = res - xres & 0xff | res - xres & 0xff00 | res - (xres & 0xff0000) & 0xff0000;
-	res |= ((xres * 0xFF) >> 8);
+	ffres = (xres * 0xFF) >> 8;
+	res = (res | ffres) - xres;
+	res |= ffres;
 	return res;
 }
 
